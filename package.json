@@ -1,0 +1,13 @@
+{
+  "name": "worker-microservices",
+  "module": "index.ts",
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@types/bun": "latest",
+    "typescript": "^5.7.2"
+  },
+  "type": "module"
+}
