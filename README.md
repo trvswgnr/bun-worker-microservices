@@ -1,4 +1,4 @@
-# Worker Microservices
+# Bun Worker Microservices
 
 A type-safe microservices framework built with TypeScript and [Bun Workers](https://bun.sh/docs/api/workers).
 
