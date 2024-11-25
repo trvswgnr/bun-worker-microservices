@@ -7,7 +7,7 @@ const UserService = createServiceConstructor(
     class {
         name = "user" as const;
         getUser(id: string) {
-            return { id, name: "John Doe" };
+            return { id, name: "travvy" };
         }
         logUser(id: string) {
             const user = this.getUser(id);
