@@ -42,19 +42,17 @@ export class Orchestrator<T extends Record<string, { worker: Worker }>> {
         A extends keyof ServiceActions<Service<T>>,
         Args extends ActionArgs<Service<T>, A>,
     >(
-        source: S,
         target: T,
         action: A,
         args: Args,
     ): Message<S, T, typeof action, typeof args> {
-        console.log(
-            "sending message directly to service:",
-            target,
-            "from",
-            source,
-        );
         const service = this.services[target];
-        const message = createMessage(source, target, action, args);
+        const message = createMessage(
+            "orchestrator" as never,
+            target,
+            action,
+            args,
+        );
         service.worker.postMessage(message);
         return message;
     }
