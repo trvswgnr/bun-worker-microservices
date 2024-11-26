@@ -5,9 +5,11 @@ import type {
     Services,
     ActionArgs,
     Message,
+    ServicesResult,
+    GenericServices,
 } from "./types";
 
-export class Orchestrator<T extends Record<string, { worker: Worker }>> {
+export class Orchestrator<T extends ServicesResult<GenericServices>> {
     private services: T;
 
     constructor(services: T) {

@@ -1,4 +1,4 @@
-import { createServiceConstructor, createMessage } from "../util";
+import { createServiceConstructor, createMessage } from "../shared/util";
 
 declare const self: Worker;
 

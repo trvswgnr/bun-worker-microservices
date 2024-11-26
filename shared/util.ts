@@ -1,5 +1,4 @@
 import { z } from "zod";
-import path from "node:path";
 import type {
     ServiceNames,
     ServiceActions,
@@ -12,14 +11,20 @@ import type {
     ServicesResult,
 } from "./types";
 import { baseMessageSchema } from "./schema";
+import { WorkerPool } from "./WorkerPool";
 
 export function createServices<const S extends GenericServices>(
     services: S,
 ): ServicesResult<S> {
+    const maxWorkers = Math.max(1, navigator.hardwareConcurrency ?? 1) - 1; // sub 1 to leave 1 for the orchestrator
+    const workersEach = Math.max(
+        1,
+        Math.floor(maxWorkers / Object.keys(services).length),
+    );
     return Object.fromEntries(
         Object.entries(services).map(([name, actions]) => {
             const service = {
-                worker: new Worker(path.join(__dirname, `services/${name}.ts`)),
+                worker: new WorkerPool(`./services/${name}.ts`, workersEach),
                 actions,
             };
             return [name, service];

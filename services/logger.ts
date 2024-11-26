@@ -1,4 +1,4 @@
-import { createServiceConstructor } from "../util";
+import { createServiceConstructor } from "../shared/util";
 
 declare const self: Worker;
 

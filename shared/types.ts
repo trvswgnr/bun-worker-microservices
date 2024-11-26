@@ -1,13 +1,14 @@
 import type { z } from "zod";
 import type { services } from "./config";
 import type { uuidSchema, userSchema } from "./schema";
+import type { WorkerPool } from "./WorkerPool";
 
 export type GenericAction = { args: z.ZodTypeAny; return: z.ZodTypeAny };
 export type GenericService = Record<string, GenericAction>;
 export type GenericServices = Record<string, GenericService>;
 export type ServicesResult<S extends GenericServices> = {
     [K in keyof S]: {
-        worker: Worker;
+        worker: WorkerPool;
         actions: S[K];
     };
 };

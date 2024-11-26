@@ -1,5 +1,5 @@
-import { Orchestrator } from "./orchestrator";
-import { services } from "./config";
+import { Orchestrator } from "./shared/_orchestrator";
+import { services } from "./shared/config";
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
