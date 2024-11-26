@@ -1,9 +1,16 @@
 import { createServiceConstructor } from "../shared/util";
 import fs from "node:fs";
 
+let mkdirCalled = false;
 const validStrategies = {
     console: console.log,
-    file: (msg: string) => fs.appendFileSync("log.txt", `${msg}\n`),
+    file: (msg: string) => {
+        if (!mkdirCalled) {
+            fs.mkdirSync("logs", { recursive: true });
+            mkdirCalled = true;
+        }
+        fs.appendFileSync("logs/app.log", `${msg}\n`);
+    },
 } as const;
 type Strategy = keyof typeof validStrategies;
 

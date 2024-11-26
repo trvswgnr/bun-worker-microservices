@@ -1,9 +1,11 @@
 import { z } from "zod";
 import { createServices, createMessageSchema } from "./util";
 import { userSchema } from "./schema";
+import type { ServicesIn } from "./types";
 
 export const services = createServices({
     user: {
+        numWorkers: 1,
         actions: {
             getUser: {
                 args: z.tuple([z.string()]),
@@ -16,6 +18,7 @@ export const services = createServices({
         },
     },
     logger: {
+        numWorkers: 1,
         actions: {
             log: {
                 args: z.tuple([z.string()]),
@@ -23,4 +26,4 @@ export const services = createServices({
             },
         },
     },
-});
+} satisfies ServicesIn);

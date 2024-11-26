@@ -13,13 +13,36 @@ export type TupleContains<T extends readonly unknown[], V> = T extends [
     : false;
 
 export type ActionIn = { args: z.ZodTypeAny; return: z.ZodTypeAny };
-export type ServiceIn = { actions: Record<string, ActionIn> };
+export type ServiceIn = {
+    /**
+     * The relative number of workers to create for this service, as a ratio of
+     * the total number of workers.
+     */
+    numWorkers: number;
+    /**
+     * The actions that this service can perform.
+     */
+    actions: Record<string, ActionIn>;
+};
 export type ServicesIn = Record<string, ServiceIn>;
+
+export type ServiceOut<S extends ServiceIn> = {
+    /**
+     * The worker pool for this service.
+     */
+    worker: WorkerPool;
+    /**
+     * The actions that this service can perform.
+     */
+    actions: S["actions"];
+    /**
+     * The number of workers created for this service.
+     */
+    numWorkers: S["numWorkers"];
+};
+
 export type ServicesOut<S extends ServicesIn> = {
-    [K in keyof S]: {
-        worker: WorkerPool;
-        actions: S[K]["actions"];
-    };
+    [K in keyof S]: ServiceOut<S[K]>;
 };
 
 export type Services = typeof services;
