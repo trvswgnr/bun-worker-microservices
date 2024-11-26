@@ -98,3 +98,5 @@ export type ServiceConstructor<
 };
 
 export type User = z.infer<typeof userSchema>;
+
+export type NonEmptyArray<T> = [T, ...T[]];

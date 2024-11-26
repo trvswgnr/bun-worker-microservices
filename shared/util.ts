@@ -187,7 +187,10 @@ export function distributeWorkers(
     );
 }
 
-export function createUtils<T extends ServiceNames>(name: T, worker: Worker) {
+export function createServiceUtils<T extends ServiceNames>(
+    name: T,
+    worker: Worker,
+) {
     return {
         createServiceConstructor: <A extends readonly unknown[]>(service: {
             new (...args: A): ServiceInstance<T>;

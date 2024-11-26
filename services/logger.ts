@@ -1,4 +1,5 @@
-import { createUtils } from "../shared/util";
+import { createServiceUtils } from "../shared/util";
+import type { NonEmptyArray } from "../shared/types";
 import fs from "node:fs";
 
 let mkdirCalled = false;
@@ -6,7 +7,6 @@ const validStrategies = {
     console: console.log,
     file: (msg: string) => {
         if (!mkdirCalled) {
-            fs.mkdirSync("logs", { recursive: true });
             mkdirCalled = true;
         }
         fs.appendFileSync("logs/app.log", `${msg}\n`);
@@ -16,15 +16,18 @@ type Strategy = keyof typeof validStrategies;
 
 declare const self: Worker;
 
-const utils = createUtils("logger", self);
+const { createServiceConstructor } = createServiceUtils("logger", self);
 
-const LoggerService = utils.createServiceConstructor(
+const LoggerService = createServiceConstructor(
     class {
         logFn: (msg: string) => void;
-        constructor(strategy: Strategy[]) {
+        constructor(strategies: NonEmptyArray<Strategy>) {
+            if (strategies.includes("file")) {
+                fs.mkdirSync("logs", { recursive: true });
+            }
             this.logFn = (msg) => {
                 for (const s of Object.keys(validStrategies)) {
-                    if (strategy.includes(s as Strategy)) {
+                    if (strategies.includes(s as Strategy)) {
                         validStrategies[s as Strategy](msg);
                     }
                 }

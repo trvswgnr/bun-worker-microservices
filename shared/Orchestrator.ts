@@ -1,4 +1,4 @@
-import { createMessageListener, createUtils } from "./util";
+import { createMessageListener, createServiceUtils } from "./util";
 import type {
     ServiceActions,
     Service,
@@ -10,7 +10,7 @@ import type {
 } from "./types";
 
 // @ts-expect-error we want to use "orchestrator" as the name
-const utils = createUtils("orchestrator", self);
+const utils = createServiceUtils("orchestrator", self);
 
 export class Orchestrator<T extends ServicesOut<ServicesIn>> {
     private services: T;

@@ -1,8 +1,8 @@
-import { createUtils } from "../shared/util";
+import { createServiceUtils } from "../shared/util";
 
 declare const self: Worker;
 
-const { createMessage, createServiceConstructor } = createUtils("user", self);
+const { createMessage, createServiceConstructor } = createServiceUtils("user", self);
 
 const UserService = createServiceConstructor(
     class {
