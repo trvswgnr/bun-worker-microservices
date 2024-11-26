@@ -1,4 +1,4 @@
-import { createServiceConstructor } from "../shared/util";
+import { createUtils } from "../shared/util";
 import fs from "node:fs";
 
 let mkdirCalled = false;
@@ -16,11 +16,11 @@ type Strategy = keyof typeof validStrategies;
 
 declare const self: Worker;
 
-const LoggerService = createServiceConstructor(
-    self,
+const utils = createUtils("logger", self);
+
+const LoggerService = utils.createServiceConstructor(
     class {
         logFn: (msg: string) => void;
-        name = "logger" as const;
         constructor(strategy: Strategy[]) {
             this.logFn = (msg) => {
                 for (const s of Object.keys(validStrategies)) {

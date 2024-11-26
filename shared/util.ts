@@ -43,7 +43,7 @@ export function createMessageSchema<
     });
 }
 
-export function createMessage<
+function createMessage<
     Source extends ServiceNames,
     Target extends ServiceNames,
     Action extends keyof ServiceActions<Services[Target]>,
@@ -63,13 +63,15 @@ export function createMessage<
         args,
     };
 }
-export function createServiceConstructor<
+function createServiceConstructor<
     S extends keyof Services,
     A extends readonly unknown[],
 >(
+    name: S,
     worker: Worker,
     service: { new (...args: A): ServiceInstance<S> },
 ): ServiceConstructor<S, A> {
+    service.prototype.name = name;
     service.prototype.id = crypto.randomUUID();
     service.prototype.init = function (this: ServiceInstance<S>) {
         worker.addEventListener(
@@ -101,6 +103,7 @@ export function createServiceConstructor<
         worker.addEventListener("error", (event) => {
             throw (
                 event.error ??
+                // @ts-expect-error we know name is a property
                 new Error(`unknown worker error from service "${this.name}"`)
             );
         });
@@ -182,4 +185,21 @@ export function distributeWorkers(
             return [name, { ...service, numWorkers }];
         }),
     );
+}
+
+export function createUtils<T extends ServiceNames>(name: T, worker: Worker) {
+    return {
+        createServiceConstructor: <A extends readonly unknown[]>(service: {
+            new (...args: A): ServiceInstance<T>;
+        }) => createServiceConstructor(name, worker, service),
+        createMessage: <
+            Target extends ServiceNames,
+            Action extends keyof ServiceActions<Services[Target]>,
+            Args extends ActionArgs<Services[Target], Action>,
+        >(
+            target: Target,
+            action: Action,
+            args: Args,
+        ) => createMessage(name, target, action, args),
+    };
 }

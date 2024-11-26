@@ -1,4 +1,4 @@
-import { createMessage, createMessageListener } from "./util";
+import { createMessageListener, createUtils } from "./util";
 import type {
     ServiceActions,
     Service,
@@ -8,6 +8,9 @@ import type {
     ServicesOut,
     ServicesIn,
 } from "./types";
+
+// @ts-expect-error we want to use "orchestrator" as the name
+const utils = createUtils("orchestrator", self);
 
 export class Orchestrator<T extends ServicesOut<ServicesIn>> {
     private services: T;
@@ -48,13 +51,8 @@ export class Orchestrator<T extends ServicesOut<ServicesIn>> {
         args: Args,
     ): Message<S, T, typeof action, typeof args> {
         const service = this.services[target];
-        const message = createMessage(
-            "orchestrator" as never,
-            target,
-            action,
-            args,
-        );
+        const message = utils.createMessage(target, action, args);
         service.worker.postMessage(message);
-        return message;
+        return message as Message<S, T, A, Args>;
     }
 }

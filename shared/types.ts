@@ -86,7 +86,7 @@ export type ServiceInstance<S extends keyof Services> = {
     [K in keyof ServiceActions<Services[S]>]: (
         ...args: ActionArgs<Services[S], K>
     ) => ActionReturn<Services[S], K>;
-} & { name: S };
+};
 
 export type ServiceConstructor<
     S extends keyof Services,
