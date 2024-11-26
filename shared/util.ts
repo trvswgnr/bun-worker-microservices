@@ -99,10 +99,7 @@ export function createServiceConstructor<
         );
 
         worker.addEventListener("error", (event) => {
-            throw (
-                event.error ??
-                new Error(`unknown worker error from service "${this.name}"`)
-            );
+            throw event.error;
         });
     };
     return service as ServiceConstructor<S, A>;
