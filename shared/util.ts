@@ -64,7 +64,6 @@ export function createMessage<
         args,
     };
 }
-
 export function createServiceConstructor<
     S extends keyof Services,
     A extends readonly unknown[],
@@ -72,16 +71,17 @@ export function createServiceConstructor<
     worker: Worker,
     service: { new (...args: A): ServiceInstance<S> },
 ): ServiceConstructor<S, A> {
+    service.prototype.id = crypto.randomUUID();
     service.prototype.init = function (this: ServiceInstance<S>) {
         worker.addEventListener(
             "message",
             createMessageListener((event) => {
-                console.log(
-                    "service",
-                    this.name,
-                    "received message",
-                    event.data,
-                );
+                // console.log(
+                //     "service",
+                //     this.name,
+                //     "received message",
+                //     event.data,
+                // );
                 if (!event.data) {
                     console.log("No data for service message");
                     return;

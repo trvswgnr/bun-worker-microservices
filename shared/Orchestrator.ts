@@ -21,15 +21,14 @@ export class Orchestrator<T extends ServicesResult<GenericServices>> {
             service.worker.addEventListener(
                 "message",
                 createMessageListener((event) => {
-                    console.log("orchestrator received message", event.data);
+                    // console.log("orchestrator received message", event.data);
                     if (!event.data) {
-                        console.log("no data for orchestrator message");
+                        // console.log("no data for orchestrator message");
                         return;
                     }
                     const target = event.data.target;
                     if (!(target in this.services)) {
-                        console.log("Service not found", target);
-                        return;
+                        throw new Error(`Service not found: ${target}`);
                     }
                     const targetService = this.services[target];
                     targetService.worker.postMessage(event.data);

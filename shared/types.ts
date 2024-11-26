@@ -60,7 +60,9 @@ export type ServiceConstructor<
     S extends keyof Services,
     A extends readonly unknown[],
 > = {
-    new (...args: A): ServiceInstance<S> & { name: S; init: () => void };
+    new (
+        ...args: A
+    ): ServiceInstance<S> & { id: string; name: S; init: () => void };
 };
 
 export type User = z.infer<typeof userSchema>;
