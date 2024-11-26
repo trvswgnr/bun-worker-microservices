@@ -7,29 +7,29 @@ import type {
     Message,
     ServiceInstance,
     ServiceConstructor,
-    GenericServices,
-    ServicesResult,
+    ServicesIn,
+    ServicesOut,
 } from "./types";
 import { baseMessageSchema } from "./schema";
 import { WorkerPool } from "./WorkerPool";
 
-export function createServices<const S extends GenericServices>(
+export function createServices<const S extends ServicesIn>(
     services: S,
-): ServicesResult<S> {
+): ServicesOut<S> {
     const maxWorkers = Math.max(1, navigator.hardwareConcurrency ?? 1) - 1; // sub 1 to leave 1 for the orchestrator
     const workersEach = Math.max(
         1,
         Math.floor(maxWorkers / Object.keys(services).length),
     );
     return Object.fromEntries(
-        Object.entries(services).map(([name, actions]) => {
-            const service = {
+        Object.entries(services).map(([name, service]) => {
+            const s = {
                 worker: new WorkerPool(`./services/${name}.ts`, workersEach),
-                actions,
+                actions: service.actions,
             };
-            return [name, service];
+            return [name, s];
         }),
-    ) as ServicesResult<S>;
+    ) as ServicesOut<S>;
 }
 
 export function createMessageSchema<

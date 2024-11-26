@@ -3,13 +3,22 @@ import type { services } from "./config";
 import type { uuidSchema, userSchema } from "./schema";
 import type { WorkerPool } from "./WorkerPool";
 
-export type GenericAction = { args: z.ZodTypeAny; return: z.ZodTypeAny };
-export type GenericService = Record<string, GenericAction>;
-export type GenericServices = Record<string, GenericService>;
-export type ServicesResult<S extends GenericServices> = {
+export type TupleContains<T extends readonly unknown[], V> = T extends [
+    infer First,
+    ...infer Rest,
+]
+    ? First extends V
+        ? true
+        : TupleContains<Rest, V>
+    : false;
+
+export type ActionIn = { args: z.ZodTypeAny; return: z.ZodTypeAny };
+export type ServiceIn = { actions: Record<string, ActionIn> };
+export type ServicesIn = Record<string, ServiceIn>;
+export type ServicesOut<S extends ServicesIn> = {
     [K in keyof S]: {
         worker: WorkerPool;
-        actions: S[K];
+        actions: S[K]["actions"];
     };
 };
 

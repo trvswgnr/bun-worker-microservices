@@ -29,5 +29,5 @@ const LoggerService = createServiceConstructor(
     },
 );
 
-const logger = new LoggerService(["file"]);
+const logger = new LoggerService(["console", "file"]);
 logger.init();
